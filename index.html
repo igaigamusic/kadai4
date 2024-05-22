@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>メモ帳</title>
+  <script src="js/jquery-3.7.1.slim.min.js"></script>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <h1>今日の気分にあう色は？</h1>
+
+  <main>
+    <div class="input-area">
+      <input id="title" type="date" placeholder="日時">
+      <input type="color" id="color" value="#000000">      
+    </div>
+
+    <div class="button-area">
+      <button id="save">保存</button>
+      <button id="delete">右の日を<br>削除</button>
+      <input type="date" id="delete_date">
+      <button id="clear">全部削除</button>
+    </div>
+  </main>
+
+  <ul id="list">
+    <!-- ここに追加データが挿入される -->
+  </ul>
+  <footer>
+    G's Academy
+  </footer>
+
+
+  <!-- 以下にjsを書いていきます -->
+  <script>
+    //1.Save クリックイベント
+    $("#save").on("click", function(){
+      const key = $("#title").val();
+      const value = $("#color").val();
+
+      localStorage.setItem(key, value);
+      const html = `
+      <li>
+        <p>${key}</p>
+        <p>${value}</p>
+      </li>
+    `;
+      $("#list").append(html);
+
+      // ボタンが押された後に、中身を削除するテクニック
+      $("#title").val("");
+      $("#color").val("");
+    });
+
+
+    //2-1.clear クリックイベント
+    $("#clear").on("click", function(){
+      localStorage.clear();
+      $("#list").empty();
+    });
+
+    // 2-2.deleteクリックイベント
+    $("#delete").on("click", function(){
+      const delete_key = $("#delete_date").val();
+      localStorage.removeItem(delete_key);
+      // ↓ローカルストレージ内は消えるがlistの中から消せない…
+      $("#delete_date").remove();
+    });
+
+
+    //3.ページ読み込み：保存データ取得表示
+    for (let i = 0; i < localStorage.length; i++){
+      const key = localStorage.key(i);
+      const value = localStorage.getItem(key);
+      const html = `
+      <li>
+        <p>${key}</p>
+        <p>${value}</p>
+      </li>
+    `;
+      $("#list").append(html);
+    }
+  </script>
+</body>
+
+</html>
